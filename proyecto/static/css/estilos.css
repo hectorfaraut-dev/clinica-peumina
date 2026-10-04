@@ -1,0 +1,65 @@
+:root {
+  --cp-primary: #0d7a5f;
+  --cp-primary-dark: #095c47;
+  --cp-accent: #e8f5f0;
+}
+
+body {
+  background-color: #f4f7f6;
+  min-height: 100vh;
+}
+
+.navbar-clinica {
+  background-color: var(--cp-primary);
+}
+
+.navbar-clinica .navbar-brand,
+.navbar-clinica .nav-link {
+  color: #ffffff !important;
+}
+
+.navbar-clinica .nav-link.active {
+  font-weight: 600;
+  text-decoration: underline;
+}
+
+.btn-primary {
+  background-color: var(--cp-primary);
+  border-color: var(--cp-primary);
+}
+
+.btn-primary:hover, .btn-primary:focus {
+  background-color: var(--cp-primary-dark);
+  border-color: var(--cp-primary-dark);
+}
+
+.card-stat {
+  border: none;
+  border-radius: 0.75rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.card-stat .stat-number {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--cp-primary);
+}
+
+.badge-estado-pendiente { background-color: #f0ad4e; }
+.badge-estado-confirmada { background-color: #0d7a5f; }
+.badge-estado-atendida { background-color: #5bc0de; }
+.badge-estado-cancelada { background-color: #d9534f; }
+
+.card {
+  border-radius: 0.75rem;
+}
+
+.table thead {
+  background-color: var(--cp-accent);
+}
+
+.footer-clinica {
+  padding: 1.5rem 0;
+  color: #6c757d;
+  font-size: 0.9rem;
+}

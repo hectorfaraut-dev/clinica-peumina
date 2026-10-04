@@ -1,0 +1,150 @@
+{% extends "base.html" %}
+{% block title %}Panel — Clínica Peumina{% endblock %}
+{% block content %}
+<h2 class="fw-bold mb-1">Panel de control</h2>
+<p class="text-muted mb-4">Resumen general de la clínica — {% now "l, j \d\e F \d\e Y" %}</p>
+
+<div class="row g-3 mb-4">
+    <div class="col-md-3 col-6">
+        <div class="card card-stat p-3">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <div class="stat-number">{{ total_pacientes }}</div>
+                    <div class="text-muted">Pacientes activos</div>
+                </div>
+                <i class="bi bi-people" style="font-size: 2rem; color: #0d7a5f;"></i>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 col-6">
+        <div class="card card-stat p-3">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <div class="stat-number">{{ total_medicos }}</div>
+                    <div class="text-muted">Médicos activos</div>
+                </div>
+                <i class="bi bi-person-badge" style="font-size: 2rem; color: #0d7a5f;"></i>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 col-6">
+        <div class="card card-stat p-3">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <div class="stat-number">{{ total_especialidades }}</div>
+                    <div class="text-muted">Especialidades</div>
+                </div>
+                <i class="bi bi-clipboard2-pulse" style="font-size: 2rem; color: #0d7a5f;"></i>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3 col-6">
+        <div class="card card-stat p-3">
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    <div class="stat-number">{{ citas_pendientes }}</div>
+                    <div class="text-muted">Citas pendientes</div>
+                </div>
+                <i class="bi bi-hourglass-split" style="font-size: 2rem; color: #0d7a5f;"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4">
+    <div class="col-lg-7">
+        <div class="card shadow-sm">
+            <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                <strong><i class="bi bi-calendar-day"></i> Citas de hoy</strong>
+                <a href="{% url 'clinica:cita_crear' %}" class="btn btn-sm btn-primary">
+                    <i class="bi bi-plus-lg"></i> Agendar
+                </a>
+            </div>
+            <div class="card-body p-0">
+                {% if citas_hoy %}
+                <table class="table mb-0">
+                    <thead>
+                        <tr><th>Hora</th><th>Paciente</th><th>Médico</th><th>Estado</th></tr>
+                    </thead>
+                    <tbody>
+                        {% for cita in citas_hoy %}
+                        <tr>
+                            <td>{{ cita.hora }}</td>
+                            <td><a href="{% url 'clinica:paciente_detalle' cita.paciente.pk %}">{{ cita.paciente.nombre_completo }}</a></td>
+                            <td>{{ cita.medico.nombre_completo }}</td>
+                            <td><span class="badge badge-estado-{{ cita.estado }}">{{ cita.get_estado_display }}</span></td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                {% else %}
+                <p class="text-muted p-3 mb-0">No hay citas agendadas para hoy.</p>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="card shadow-sm mt-4">
+            <div class="card-header bg-white">
+                <strong><i class="bi bi-calendar-week"></i> Próximas citas</strong>
+            </div>
+            <div class="card-body p-0">
+                {% if proximas_citas %}
+                <table class="table mb-0">
+                    <thead><tr><th>Fecha</th><th>Hora</th><th>Paciente</th><th>Médico</th></tr></thead>
+                    <tbody>
+                        {% for cita in proximas_citas %}
+                        <tr>
+                            <td>{{ cita.fecha|date:"d-m-Y" }}</td>
+                            <td>{{ cita.hora }}</td>
+                            <td>{{ cita.paciente.nombre_completo }}</td>
+                            <td>{{ cita.medico.nombre_completo }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                {% else %}
+                <p class="text-muted p-3 mb-0">No hay próximas citas.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div class="col-lg-5">
+        <div class="card shadow-sm">
+            <div class="card-header bg-white">
+                <strong><i class="bi bi-bar-chart"></i> Médicos por especialidad</strong>
+            </div>
+            <div class="card-body">
+                {% if medicos_por_especialidad %}
+                {% for esp in medicos_por_especialidad %}
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span>{{ esp.nombre }}</span>
+                    <span class="badge bg-secondary">{{ esp.total }}</span>
+                </div>
+                {% endfor %}
+                {% else %}
+                <p class="text-muted mb-0">No hay especialidades registradas.</p>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="card shadow-sm mt-4">
+            <div class="card-header bg-white"><strong><i class="bi bi-lightning"></i> Accesos rápidos</strong></div>
+            <div class="card-body d-grid gap-2">
+                <a href="{% url 'clinica:paciente_crear' %}" class="btn btn-outline-primary">
+                    <i class="bi bi-person-plus"></i> Nuevo paciente
+                </a>
+                <a href="{% url 'clinica:medico_crear' %}" class="btn btn-outline-primary">
+                    <i class="bi bi-person-badge"></i> Nuevo médico
+                </a>
+                <a href="{% url 'clinica:cita_crear' %}" class="btn btn-outline-primary">
+                    <i class="bi bi-calendar-plus"></i> Agendar cita
+                </a>
+                <a href="{% url 'clinica:especialidad_crear' %}" class="btn btn-outline-primary">
+                    <i class="bi bi-clipboard2-plus"></i> Nueva especialidad
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

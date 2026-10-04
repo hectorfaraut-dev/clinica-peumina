@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block title %}Crear cuenta — Clínica Peumina{% endblock %}
+{% block content %}
+<div class="row justify-content-center mt-5">
+    <div class="col-md-6">
+        <div class="text-center mb-4">
+            <i class="bi bi-hospital" style="font-size: 3rem; color: #0d7a5f;"></i>
+            <h2 class="fw-bold mt-2">Clínica Peumina</h2>
+        </div>
+        <div class="card shadow-sm">
+            <div class="card-body p-4">
+                <h4 class="card-title mb-3">Crear cuenta de acceso</h4>
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Nombre</label>
+                            {{ form.first_name }}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Apellido</label>
+                            {{ form.last_name }}
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Usuario</label>
+                        {{ form.username }}
+                        {% if form.username.errors %}<div class="text-danger small">{{ form.username.errors }}</div>{% endif %}
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Correo electrónico</label>
+                        {{ form.email }}
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Contraseña</label>
+                        {{ form.password1 }}
+                        {% if form.password1.errors %}<div class="text-danger small">{{ form.password1.errors }}</div>{% endif %}
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Confirmar contraseña</label>
+                        {{ form.password2 }}
+                        {% if form.password2.errors %}<div class="text-danger small">{{ form.password2.errors }}</div>{% endif %}
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">
+                        <i class="bi bi-person-plus"></i> Crear cuenta
+                    </button>
+                </form>
+                <hr>
+                <p class="text-center mb-0">
+                    ¿Ya tienes cuenta? <a href="{% url 'login' %}">Inicia sesión</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block title %}{{ medico.nombre_completo }} — Clínica Peumina{% endblock %}
+{% block content %}
+<a href="{% url 'clinica:medico_lista' %}" class="text-decoration-none">&larr; Volver a médicos</a>
+
+<div class="row mt-3">
+    <div class="col-lg-4">
+        <div class="card shadow-sm">
+            <div class="card-body text-center">
+                <i class="bi bi-person-badge-fill" style="font-size: 4rem; color: #0d7a5f;"></i>
+                <h4 class="mt-2 mb-0">{{ medico.nombre_completo }}</h4>
+                <p class="text-muted">{{ medico.especialidad.nombre }}</p>
+                {% if medico.activo %}<span class="badge bg-success mb-2">Activo</span>
+                {% else %}<span class="badge bg-secondary mb-2">Inactivo</span>{% endif %}
+                <hr>
+                <p class="text-start mb-1"><i class="bi bi-card-text"></i> RUT: {{ medico.rut }}</p>
+                <p class="text-start mb-1"><i class="bi bi-telephone"></i> {{ medico.telefono }}</p>
+                <p class="text-start mb-1"><i class="bi bi-envelope"></i> {{ medico.email }}</p>
+                <p class="text-start mb-1"><i class="bi bi-clock"></i> {{ medico.horario_inicio }} — {{ medico.horario_fin }}</p>
+                <p class="text-start mb-0"><i class="bi bi-calendar"></i> Ingreso: {{ medico.fecha_ingreso|date:"d-m-Y" }}</p>
+                <div class="d-grid gap-2 mt-3">
+                    <a href="{% url 'clinica:medico_editar' medico.pk %}" class="btn btn-outline-primary btn-sm"><i class="bi bi-pencil"></i> Editar</a>
+                    <a href="{% url 'clinica:medico_eliminar' medico.pk %}" class="btn btn-outline-danger btn-sm"><i class="bi bi-trash"></i> Eliminar</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-8">
+        <div class="card shadow-sm">
+            <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                <strong><i class="bi bi-calendar-check"></i> Últimas citas</strong>
+                <a href="{% url 'clinica:cita_crear' %}" class="btn btn-sm btn-primary">
+                    <i class="bi bi-plus-lg"></i> Agendar
+                </a>
+            </div>
+            <div class="card-body p-0">
+                {% if citas %}
+                <table class="table mb-0">
+                    <thead><tr><th>Fecha</th><th>Hora</th><th>Paciente</th><th>Estado</th></tr></thead>
+                    <tbody>
+                        {% for cita in citas %}
+                        <tr>
+                            <td>{{ cita.fecha|date:"d-m-Y" }}</td>
+                            <td>{{ cita.hora }}</td>
+                            <td><a href="{% url 'clinica:paciente_detalle' cita.paciente.pk %}">{{ cita.paciente.nombre_completo }}</a></td>
+                            <td><span class="badge badge-estado-{{ cita.estado }}">{{ cita.get_estado_display }}</span></td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                {% else %}
+                <p class="text-muted p-3 mb-0">Este médico no tiene citas registradas.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

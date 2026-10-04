@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block title %}Detalle de cita — Clínica Peumina{% endblock %}
+{% block content %}
+<a href="{% url 'clinica:cita_lista' %}" class="text-decoration-none">&larr; Volver a citas</a>
+
+<div class="row justify-content-center mt-3">
+    <div class="col-lg-7">
+        <div class="card shadow-sm">
+            <div class="card-header bg-white d-flex justify-content-between align-items-center">
+                <strong><i class="bi bi-calendar-check"></i> Cita del {{ cita.fecha|date:"d-m-Y" }}</strong>
+                <span class="badge badge-estado-{{ cita.estado }}">{{ cita.get_estado_display }}</span>
+            </div>
+            <div class="card-body">
+                <dl class="row mb-0">
+                    <dt class="col-sm-4">Paciente</dt>
+                    <dd class="col-sm-8"><a href="{% url 'clinica:paciente_detalle' cita.paciente.pk %}">{{ cita.paciente.nombre_completo }}</a></dd>
+
+                    <dt class="col-sm-4">Médico</dt>
+                    <dd class="col-sm-8"><a href="{% url 'clinica:medico_detalle' cita.medico.pk %}">{{ cita.medico.nombre_completo }}</a> ({{ cita.medico.especialidad }})</dd>
+
+                    <dt class="col-sm-4">Fecha y hora</dt>
+                    <dd class="col-sm-8">{{ cita.fecha|date:"d-m-Y" }} a las {{ cita.hora }}</dd>
+
+                    <dt class="col-sm-4">Motivo</dt>
+                    <dd class="col-sm-8">{{ cita.motivo }}</dd>
+
+                    <dt class="col-sm-4">Observaciones</dt>
+                    <dd class="col-sm-8">{{ cita.observaciones|default:"—" }}</dd>
+
+                    <dt class="col-sm-4">Registrada</dt>
+                    <dd class="col-sm-8">{{ cita.creada_en|date:"d-m-Y H:i" }}</dd>
+                </dl>
+
+                <hr>
+                <p class="fw-semibold mb-2">Cambiar estado:</p>
+                <div class="d-flex gap-2 flex-wrap mb-3">
+                    {% for valor, etiqueta in cita.ESTADO_CHOICES %}
+                    <form method="post" action="{% url 'clinica:cita_cambiar_estado' cita.pk valor %}">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-sm {% if cita.estado == valor %}btn-primary{% else %}btn-outline-primary{% endif %}">
+                            {{ etiqueta }}
+                        </button>
+                    </form>
+                    {% endfor %}
+                </div>
+
+                <div class="d-flex gap-2">
+                    <a href="{% url 'clinica:cita_editar' cita.pk %}" class="btn btn-outline-primary btn-sm"><i class="bi bi-pencil"></i> Editar</a>
+                    <a href="{% url 'clinica:cita_eliminar' cita.pk %}" class="btn btn-outline-danger btn-sm"><i class="bi bi-trash"></i> Eliminar</a>
+                    <a href="{% url 'clinica:historial_crear' %}?paciente={{ cita.paciente.pk }}" class="btn btn-outline-success btn-sm"><i class="bi bi-file-medical"></i> Registrar atención</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
